@@ -41,7 +41,7 @@ This project uses a containerized microservices architecture:
 
 ### Prerequisites
 
-- Docker and Docker Compose
+- Docker with Docker Compose plugin
 - Git
 
 ### 1. Clone and Setup
@@ -68,10 +68,10 @@ The setup script will:
 
 ```bash
 # Seed with sample league data (league ID 314)
-docker-compose exec backend python /app/../scripts/seed_data.py
+docker compose exec backend python /app/../scripts/seed_data.py
 
 # Or specify your own league ID
-docker-compose exec backend python /app/../scripts/seed_data.py 12345
+docker compose exec backend python /app/../scripts/seed_data.py 12345
 ```
 
 ## 📁 Project Structure
@@ -118,8 +118,8 @@ fpl-platform/
 │   ├── reset.sh              # Reset database
 │   └── seed_data.py          # Load sample data
 │
-├── docker-compose.yml          # Production compose
-├── docker-compose.dev.yml     # Development overrides
+├── docker compose.yml          # Production compose
+├── docker compose.dev.yml     # Development overrides
 ├── .env.example               # Environment template
 └── README.md
 ```
@@ -184,7 +184,7 @@ Key API endpoints:
 ./scripts/logs.sh db
 
 # Connect to database
-docker-compose exec db psql -U fpl_user -d fpl_analytics
+docker compose exec db psql -U fpl_user -d fpl_analytics
 
 # Reset database (WARNING: deletes all data)
 ./scripts/reset.sh
@@ -255,10 +255,10 @@ comparison = response.json()
 
 ```bash
 # Run backend tests
-docker-compose exec backend python -m pytest
+docker compose exec backend python -m pytest
 
 # Run with coverage
-docker-compose exec backend python -m pytest --cov=app
+docker compose exec backend python -m pytest --cov=app
 ```
 
 ## 📝 Contributing

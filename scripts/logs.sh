@@ -11,8 +11,8 @@ if [ -z "$SERVICE" ]; then
     echo "💡 Usage: ./scripts/logs.sh [service_name]"
     echo "   Available services: backend, frontend, nginx, db, redis"
     echo ""
-    docker-compose logs -f
+    docker compose logs -f
 else
     echo "📋 Showing logs for $SERVICE (use Ctrl+C to exit)"
-    docker-compose logs -f "$SERVICE"
+    docker compose logs -f "$SERVICE"
 fi

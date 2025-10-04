@@ -17,13 +17,13 @@ fi
 echo "🗑️  Resetting database..."
 
 # Stop services
-docker-compose down
+docker compose down
 
 # Remove database volume
 docker volume rm fpl-platform_postgres_data 2>/dev/null || echo "ℹ️  Database volume not found"
 
 # Start services (database will be recreated)
-docker-compose up -d
+docker compose up -d
 
 echo "✅ Database reset complete"
 echo "🔗 Frontend: http://localhost:8080"

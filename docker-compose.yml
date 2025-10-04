@@ -53,7 +53,6 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - SECRET_KEY=${SECRET_KEY:-your-secret-key-change-in-production}
-      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-http://localhost:3000,http://localhost:8050}
     volumes:
       - ./backend:/app
     ports:

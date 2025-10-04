@@ -5,7 +5,8 @@ WORKDIR /app
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
     gcc \
-    postgresql-dev \
+    libpq-dev \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Poetry
@@ -19,11 +20,14 @@ ENV POETRY_NO_INTERACTION=1 \
 # Copy dependency files
 COPY pyproject.toml poetry.lock* ./
 
-# Install dependencies
-RUN poetry install --no-dev && rm -rf $POETRY_CACHE_DIR
+# Install dependencies (without root project)
+RUN poetry install --only main --no-root && rm -rf $POETRY_CACHE_DIR
 
 # Copy application code
 COPY . .
+
+# Install the project itself
+RUN poetry install --only main
 
 # Create non-root user
 RUN useradd --create-home --shell /bin/bash app \

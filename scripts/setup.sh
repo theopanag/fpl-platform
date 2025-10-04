@@ -16,7 +16,7 @@ check_dependencies() {
         exit 1
     fi
 
-    if ! command -v docker-compose &> /dev/null; then
+    if ! command -v docker compose &> /dev/null; then
         echo "❌ Docker Compose is not installed. Please install Docker Compose first."
         exit 1
     fi
@@ -42,10 +42,10 @@ start_services() {
     echo "🚀 Building and starting services..."
 
     # Build images
-    docker-compose build
+    docker compose build
 
     # Start services
-    docker-compose up -d
+    docker compose up -d
 
     echo "✅ Services started successfully"
 }
@@ -56,7 +56,7 @@ wait_for_services() {
 
     # Wait for database
     echo "  - Waiting for database..."
-    while ! docker-compose exec -T db pg_isready -U fpl_user -d fpl_analytics &> /dev/null; do
+    while ! docker compose exec -T db pg_isready -U fpl_user -d fpl_analytics &> /dev/null; do
         sleep 2
     done
 
@@ -86,7 +86,7 @@ show_status() {
     echo "🔗 Health:    http://localhost:8080/health"
     echo ""
     echo "📊 Container Status:"
-    docker-compose ps
+    docker compose ps
 }
 
 # Main execution

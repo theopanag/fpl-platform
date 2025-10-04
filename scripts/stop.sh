@@ -6,6 +6,6 @@ set -e
 echo "🛑 Stopping FPL Analytics Platform..."
 
 # Stop services
-docker-compose down
+docker compose down
 
 echo "✅ Services stopped"

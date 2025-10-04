@@ -13,11 +13,11 @@ if [ ! -f .env ]; then
 fi
 
 # Start services
-docker-compose up -d
+docker compose up -d
 
 echo "✅ Services started"
 echo "🔗 Frontend: http://localhost:8080"
 echo "🔗 API Docs: http://localhost:8080/docs"
 
 # Show status
-docker-compose ps
+docker compose ps

@@ -28,11 +28,11 @@ echo "🔄 Pulling latest changes..."
 git pull origin main || echo "⚠️  Not a git repository or no changes to pull"
 
 echo "🏗️  Building images..."
-docker-compose build --no-cache
+docker compose build --no-cache
 
 echo "🔄 Starting services..."
-docker-compose down
-docker-compose up -d
+docker compose down
+docker compose up -d
 
 echo "⏳ Waiting for services..."
 sleep 10
@@ -44,9 +44,9 @@ if curl -sf http://localhost:8080/health > /dev/null; then
 else
     echo "❌ Deployment failed - health check failed"
     echo "📋 Checking logs:"
-    docker-compose logs --tail=50
+    docker compose logs --tail=50
     exit 1
 fi
 
 echo "📊 Final status:"
-docker-compose ps
+docker compose ps

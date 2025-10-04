@@ -6,9 +6,17 @@ Uses Pydantic settings for environment variable management and validation.
 
 from typing import Any
 
-from pydantic import PostgresDsn, field_validator
+from pydantic import PostgresDsn, field_validator, BeforeValidator
+from typing_extensions import Annotated
 from pydantic_core import MultiHostUrl
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+def _parse_hosts(v: Any) -> list[str]:
+    """Parse ALLOWED_HOSTS from comma-separated string or list."""
+    if isinstance(v, str):
+        return [host.strip() for host in v.split(",")]
+    return v
 
 
 class Settings(BaseSettings):
@@ -44,7 +52,7 @@ class Settings(BaseSettings):
             self.LOG_LEVEL = "INFO" if self.NODE_ENV.lower() == "production" else "DEBUG"
 
     # CORS
-    ALLOWED_HOSTS: list[str] = ["http://localhost:8080", "http://localhost:8050"]
+    ALLOWED_HOSTS: Annotated[list[str], BeforeValidator(_parse_hosts)] = ["http://localhost:8080", "http://localhost:8050"]
 
     # Database
     POSTGRES_SERVER: str = "localhost"
