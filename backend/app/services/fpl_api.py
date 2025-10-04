@@ -78,6 +78,93 @@ class FPLAPIService:
 
         return await self._get(endpoint)
 
+    async def get_historical_league_standings(
+        self, league_id: int, gameweek: int
+    ) -> dict[str, Any] | None:
+        """
+        Get historical league standings for a specific gameweek.
+        
+        This constructs historical standings by fetching individual team data
+        for each manager in the league for the specified gameweek.
+        """
+        # First get current league info to get list of teams
+        current_standings = await self.get_league_standings(league_id)
+        if not current_standings:
+            logger.error(f"Failed to fetch league {league_id}")
+            return None
+        
+        standings_results = current_standings.get("standings", {}).get("results", [])
+        if not standings_results:
+            logger.error(f"No standings found for league {league_id}")
+            return None
+        
+        # Extract team IDs
+        team_ids = [entry["entry"] for entry in standings_results]
+        
+        logger.info(f"Fetching historical data for {len(team_ids)} teams in league {league_id}, GW {gameweek}")
+        
+        # Fetch gameweek data for all teams in parallel
+        import asyncio
+        tasks = [
+            self.get_manager_history(team_id) 
+            for team_id in team_ids
+        ]
+        
+        histories = await asyncio.gather(*tasks, return_exceptions=True)
+        
+        # Construct standings for the specific gameweek
+        historical_results = []
+        for i, (team_id, history) in enumerate(zip(team_ids, histories)):
+            if isinstance(history, Exception) or not history:
+                logger.warning(f"Failed to fetch history for team {team_id}")
+                continue
+            
+            # Get gameweek data from history
+            current_gw_data = history.get("current", [])
+            if not current_gw_data or len(current_gw_data) < gameweek:
+                logger.warning(f"No data for team {team_id} at GW {gameweek}")
+                continue
+            
+            gw_data = current_gw_data[gameweek - 1]  # 0-indexed
+            
+            # Find original entry data for team name and manager name
+            original_entry = next(
+                (e for e in standings_results if e["entry"] == team_id),
+                None
+            )
+            
+            if not original_entry:
+                continue
+            
+            # Calculate total points up to this gameweek
+            total_points = gw_data.get("total_points", 0)
+            event_points = gw_data.get("points", 0)
+            
+            historical_results.append({
+                "id": i + 1,
+                "entry": team_id,
+                "entry_name": original_entry["entry_name"],
+                "player_name": original_entry["player_name"],
+                "rank": gw_data.get("rank", 0),
+                "last_rank": gw_data.get("rank", 0),
+                "rank_sort": gw_data.get("rank", 0),
+                "total": total_points,
+                "event_total": event_points,
+                "has_played": True,
+            })
+        
+        # Sort by rank
+        historical_results.sort(key=lambda x: x["rank"])
+        
+        # Return in same format as normal standings
+        return {
+            "league": current_standings.get("league"),
+            "standings": {
+                "results": historical_results
+            },
+            "new_entries": current_standings.get("new_entries", {})
+        }
+
     async def get_league_history(self, league_id: int) -> list[dict[str, Any]] | None:
         """Get historical performance data for the league."""
         # Note: FPL API doesn't have a direct league history endpoint

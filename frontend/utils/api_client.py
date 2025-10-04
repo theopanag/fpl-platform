@@ -46,6 +46,10 @@ class APIClient:
         """Check API health status."""
         return self._make_request("GET", "/health")
 
+    def get_bootstrap(self) -> dict[str, Any] | None:
+        """Get bootstrap static data (general game information)."""
+        return self._make_request("GET", "/api/v1/bootstrap")
+
     def get_league(self, league_id: int) -> dict[str, Any] | None:
         """Get league information."""
         return self._make_request("GET", f"/api/v1/leagues/{league_id}")

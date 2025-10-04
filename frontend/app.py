@@ -52,6 +52,8 @@ app.layout = dbc.Container([
     dcc.Store(id="league-data-store"),
     dcc.Store(id="manager-data-store"),
     dcc.Store(id="analytics-data-store"),
+    dcc.Store(id="bootstrap-data-store"),
+    dcc.Store(id="current-league-id-store"),
 
     # Navigation bar
     create_navbar(),

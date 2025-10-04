@@ -22,7 +22,7 @@ def create_league_input_section() -> dbc.Card:
                         placeholder="Enter your FPL league ID",
                         className="mb-3"
                     ),
-                ], md=8),
+                ], md=9),
                 dbc.Col([
                     dbc.Label("Action:", html_for="load-league-btn"),
                     html.Br(),
@@ -32,7 +32,7 @@ def create_league_input_section() -> dbc.Card:
                         color="primary",
                         className="w-100"
                     ),
-                ], md=4),
+                ], md=3),
             ]),
             dbc.Alert(
                 id="league-input-alert",
@@ -88,7 +88,26 @@ def create_league_table() -> dbc.Card:
     """Create league standings table."""
     return dbc.Card([
         dbc.CardHeader([
-            html.H5("League Standings", className="mb-0")
+            dbc.Row([
+                dbc.Col([
+                    html.H5("League Standings", className="mb-0")
+                ], width=6),
+                dbc.Col([
+                    dbc.Row([
+                        dbc.Col([
+                            html.Label("Gameweek:", className="me-2 mb-0", style={"line-height": "2.5"}),
+                        ], width="auto"),
+                        dbc.Col([
+                            dcc.Dropdown(
+                                id="gameweek-selector",
+                                placeholder="Select GW",
+                                style={"min-width": "120px", "display": "none"},
+                                className="mb-0"
+                            ),
+                        ], width="auto"),
+                    ], align="center", justify="end", className="g-0")
+                ], width=6),
+            ], align="center")
         ]),
         dbc.CardBody([
             html.Div(id="league-standings-table")

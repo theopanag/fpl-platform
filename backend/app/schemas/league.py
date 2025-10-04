@@ -28,9 +28,11 @@ class League(LeagueBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    fpl_id: int
-    created_at: datetime
-    updated_at: datetime
+    created: str
+    closed: bool
+    max_entries: int | None = None
+    has_cup: bool
+    cup_league: int | None = None
 
 
 class LeagueCreate(LeagueBase):
@@ -44,14 +46,14 @@ class LeagueStandingEntry(BaseModel):
 
     id: int
     entry_name: str
-    player_first_name: str
-    player_last_name: str
+    player_name: str
     rank: int
     last_rank: int
     rank_sort: int
     total: int
     entry: int
     event_total: int
+    has_played: bool
 
 
 class LeagueStandings(BaseModel):
@@ -59,4 +61,4 @@ class LeagueStandings(BaseModel):
 
     league: League
     standings: dict[str, Any]
-    new_entries: list[LeagueStandingEntry]
+    new_entries: dict[str, Any]  # Changed from list to dict to match FPL API

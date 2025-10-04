@@ -46,7 +46,14 @@ async def get_league_standings(
     """Get league standings for a specific gameweek."""
     try:
         fpl_service = FPLAPIService()
-        standings = await fpl_service.get_league_standings(league_id, gameweek)
+        
+        # If gameweek is specified, fetch historical data
+        if gameweek:
+            logger.info(f"Fetching historical standings for league {league_id}, GW {gameweek}")
+            standings = await fpl_service.get_historical_league_standings(league_id, gameweek)
+        else:
+            # Otherwise get current standings
+            standings = await fpl_service.get_league_standings(league_id, gameweek)
 
         if not standings:
             raise HTTPException(status_code=404, detail="Standings not found")
